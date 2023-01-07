@@ -1,0 +1,207 @@
+---
+title: "Airbnb NYC 2019 Analysis"
+author: "Jay"
+date: '2023-01-07'
+output: html_document
+---
+
+## Introduction and background
+
+Welcome to the Airbnb NYC 2019 data analysis!
+
+Business Task: Analyzing and visualizing Airbnb NYC 2019 data to discover new trends and creating compelling visuals for great insights.
+
+## Installing and loading packages
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+```{r}
+install.packages("lubridate")
+library(lubridate)
+```
+
+## Load your CSV files
+
+```{r}
+ab_nyc_2019 <- read_csv("filterednycairbnb.csv")
+```
+
+## Viewing dataset
+
+```{r}
+colnames(ab_nyc_2019)
+
+glimpse(ab_nyc_2019)
+```
+
+## Viewing datatypes of the columns
+
+```{r}
+str(ab_nyc_2019)
+```
+
+
+Installing and loading dplyr packages
+
+```{r}
+install.packages("dplyr")
+library(dplyr)
+```
+
+## Summarizing mean price
+
+```{r}
+ab_nyc_2019 %>% 
+  drop_na() %>% 
+  summarize(mean_price = mean(price))
+``` 
+
+## Summarizing mean price by neighbourhood group
+
+```{r}
+ab_nyc_2019 %>% 
+  group_by(neighbourhood_group) %>% 
+  summarize(mean_price = mean(price)) %>% 
+  drop_na()
+```
+
+Installing and loading tidyr packages
+
+```{r}
+install.packages("tidyr")
+library(tidyr)
+```
+
+
+## Summarizing room type by min price
+
+```{r}
+ab_nyc_2019 %>% 
+  group_by(room_type) %>% 
+  summarize(min_price = min(price)) %>% 
+  drop_na()
+```
+
+## Summarizing room type by max price
+
+```{r}
+ab_nyc_2019 %>% 
+  group_by(room_type) %>% 
+  summarize(max_price = max(price)) %>% 
+  drop_na()
+```
+
+## Summarizing neighbourhood group by price
+
+```{r}
+ab_nyc_2019 %>% 
+  group_by(neighbourhood_group) %>% 
+  summarize(sum_price = sum(price)) %>% 
+  drop_na()
+```
+
+## Summarizing room type by price 
+
+```{r}
+ab_nyc_2019 %>% 
+  group_by(room_type) %>% 
+  summarize(sum_price = sum(price)) %>% 
+  drop_na()
+```
+
+## Data Visualizations
+ 
+Minimum Nights
+
+```{r}
+ggplot(data = ab_nyc_2019) +
+  geom_bar(mapping = aes(x = minimum_nights)) +
+  labs(title = "Minimum Nights")
+```
+
+Number of reviews
+
+```{r}
+ggplot(data = ab_nyc_2019) +
+  geom_bar(mapping = aes(x = number_of_reviews)) +
+  labs(title = "Number of reviews")
+```
+
+
+## Neighbourhood group number of reviews
+
+```{r}
+ggplot(ab_nyc_2019, aes(number_of_reviews, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 50)
+```
+
+
+
+
+Adding facet wrap function and title to the graph
+
+Manhattan and Brooklyn have highest number of reviews and staten island have lowest number of reviews. We can also checkout number of reviews per room type in different nieghbourhood.
+
+```{r}
+ggplot(ab_nyc_2019, aes(number_of_reviews, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 50) +
+  facet_wrap(~neighbourhood_group) +
+  labs(title = "Number of reviews for neighbourhood group")
+```
+
+## Neighbourhood group minimum nights
+
+```{r}
+ggplot(ab_nyc_2019, aes(minimum_nights, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 50)
+```
+
+
+
+
+Brooklyn ranked highest with the most nights spend in this group and staten island ranked lowest with the least nights spend in the group. We can group by minimum nights with room type knowing who has the most preference room type in each city.
+
+```{r}
+ggplot(ab_nyc_2019, aes(minimum_nights, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 50) + 
+  facet_wrap(~neighbourhood_group) +
+  labs(title = "Minimum nights in neighbourhood group")
+```
+
+
+## Neighbourhood group price
+
+```{r}
+ggplot(ab_nyc_2019, aes(price, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 500)
+```
+
+
+
+
+Brooklyn has the highest count of price and staten island has the lowest count of price.
+
+
+```{r}
+ggplot(ab_nyc_2019, aes(price, colour = neighbourhood_group)) +
+  geom_freqpoly(binwidth = 500) +
+  facet_wrap(~neighbourhood_group) +
+  labs(title = "Neighbourhood group price")
+```
+
+
+
+
+
+In Manhattan we got highest number of reviews for entire home/apt room type.
+We also got highest number of nights spend in entire home/apt room type in Brooklyn and Manhattan.
+We can say that Manhattan and Brooklyn has been the top list for airbnb customers to stay.
+Other side Staten island got lowest number of reviews and nights spend. We must more focus on this city to get customers spend more nights.
